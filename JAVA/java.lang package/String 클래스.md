@@ -342,10 +342,10 @@ public boolean regionMatches(boolean ignoreCase, int toffset, String other, int 
 ```java
 class Example {
     public static void main(String[] args) {
-      String str1 = "ABC123!@#abc";
-      String str2 = "abc123!@#ABC";
+        String str1 = "ABC123!@#abc";
+        String str2 = "abc123!@#ABC";
 
-      System.out.println(str1.equalsIgnoreCase(str2));
+        System.out.println(str1.equalsIgnoreCase(str2));
     }
 }
 ```
@@ -423,7 +423,74 @@ public String substring(int beginIndex, int endIndex) {
 
 ## join()과 StringJoiner
 
+* join()은 여러 문자열 사이에 구분자를 넣어서 결합한다.  
+  구분자로 문자열을 자르는 split()과 반대의 작업을 한다고 생각하면 이해하기 쉽다.
+  
+```java
+public static String join(CharSequence delimiter, CharSequence... elements) {
+    Objects.requireNonNull(delimiter);
+    Objects.requireNonNull(elements);
+    // Number of elements not likely worth Arrays.stream overhead.
+    StringJoiner joiner = new StringJoiner(delimiter);
+    for (CharSequence cs: elements) {
+        joiner.add(cs);
+    }
+    return joiner.toString();
+}
+```
+
+```java
+class Example {
+    public static void main(String[] args) {
+        String animals = "dog,cat,bear";
+        String[] arr = animals.split(",");
+
+        String str = String.join("-", arr);
+        System.out.println(str);
+    }
+}
+```
+
+```
+dog-cat-bear
+```
+
+* java.util.StringJoiner 클래스를 사용해서 문자열을 결합할 수도 있다.
+
+```java
+class Example {
+    public static void main(String[] args) {
+        StringJoiner sj = new StringJoiner(",", "[", "]");
+        String[] arr = {"aaa", "bbb", "ccc"};
+
+        for(String s : arr)
+        sj.add(s);
+
+        System.out.println(sj);
+    }
+}
+```
+
+```
+[aaa,bbb,ccc]
+```
+
+* join()과 java.util.StringJoiner는 JDK 1.8부터 추가되었다.
+
 ## 유니코드의 보충문자
+
+* String 클래스의 메소드 중에 매개변수의 타입이 char인 것들이 있고, int인 것들도 있다.
+  문자를 다루는 메소드인데 매개변수의 타입이 int인 이유는 확장된 유니코드를 다루기 위해서이다.
+  
+* 유니코드는 원래 2 byte, 즉 16 bit 문자체계인데, 이걸로도 모자라서 20 bit로 확장하게 되었다.  
+  그래서 하나의 문자를 char 타입으로 다루지 못하고, int 타입으로 다룰 수 밖에 없다.
+  
+* 확장에 의해 새로 추가된 문자들을 '보충 문자(supplementary characters)'라고 하는데,  
+  String 클래스의 메소드 중에서는 보충 문자를 지원하는 것이 있고 지원하지 않는 것도 있다.
+  
+* 매개변수가 'int ch'인 것들은 보충 문자를 지원하는 것이고, 'char ch'인 것들은 지원하지 않는 것이다.
+
+* 확장된 유니코드(20 bit)가 적용된 것은 JDK 1.5부터 이다.
 
 ## 문자 인코딩 변환
 
@@ -509,4 +576,50 @@ public static Integer valueOf(String s) throws NumberFormatException {
   * double Double.parseDouble(String s)
   * 문자열 "A"를 문자 'A'로 변환하려면 `char ch = "A".charAt(0);`과 같이 하면 된다.
 
+```java
+class Example {
+    public static void main(String[] args) {
+        int i = 100;
+        String str1 = String.valueOf(i);
+
+        double d = 200.0;
+        String str2 = d + "";
+
+        double sum1 = Integer.parseInt("+" + str1) + Double.parseDouble(str2);
+        double sum2 = Integer.valueOf("-" + str1) + Double.valueOf(str2);
+
+        System.out.println(sum1);
+        System.out.println(sum2);
+    }
+}
+```
+
+```
+300.0
+100.0
+```
+
+* parseInt()나 parseFloat()같은 메소드는 문자열에 공백 또는 문자가 포함되어 있는 경우 변환 시 예외(NumberFormatException)가  
+  발생할 수 있으므로 주의해야 한다. 그래서 문자열 양 끝의 공백을 제거해주는 trim()을 습관적으로 같이 사용하기도 한다.
+
+```java
+int val = Integer.parseInt(" 123 ".trim());
+```
+
+* 그러나 부호를 의미하는 '+', 소수점을 의미하는 '.', float형 값을 뜻하는 f와 같은 자료형 접미사는 허용된다.  
+  단, 자료형에 알맞은 변환을 하는 경우에만 허용된다.
+  
+* "1.0f"를 Integer.parseInt(String s)를 사용해서 변환하려하면 예외가 발생하지만,  
+  Float.parseFloat(String s)를 사용하면 아무런 문제가 없다.
+  
+* 문자열을 숫자로 변환하는 과정에서는 예외가 발생하기 쉽기 때문에 주의를 기울여야 하고, 예외처리를 적절히 해주어야 한다.
+
+* '+'가 포함된 문자열이 parseInt()로 변환가능하게 된 것은 JDK 1.7부터 이다.
+
+* Integer.parseInt(String s, int radix)를 사용하면 16진수 값으로 표현된 문자열도 변환할 수 있기 때문에 대소문자 구별 없이  
+  a, b, c, d, e, f도 사용할 수 있다. `int result = Integer.parseInt("a", 16);`의 경우 정수값 10이 저장된다.
+
+
 # 참고
+
+* [자바의 정석](http://www.kyobobook.co.kr/product/detailViewKor.laf?ejkGb=KOR&mallGb=KOR&barcode=9788994492032&orderClick=LAG&Kc=)
