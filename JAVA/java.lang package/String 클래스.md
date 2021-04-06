@@ -230,6 +230,16 @@ public String(StringBuilder builder) {
 
 ### 메소드
 
+#### String toString()
+
+* String 인스턴스에 저장되어 있는 문자열을 반환한다.
+
+```java
+public String toString() {
+    return this;
+}
+```
+
 #### char charAt(int index)
 
 * 지정된 위치(index)에 있는 문자를 알려준다. (index는 0부터 시작)
@@ -250,6 +260,16 @@ public char charAt(int index) {
 ```java
 public int length() {
     return value.length;
+}
+```
+
+#### boolean isEmpty()
+
+* 빈 문자열인지 알려준다.
+
+```java
+public boolean isEmpty() {
+    return value.length == 0;
 }
 ```
 
@@ -419,7 +439,68 @@ public String substring(int beginIndex, int endIndex) {
 }
 ```
 
-#### 
+#### String trim()
+
+* 문자열의 왼쪽 끝과 오른쪽 끝에 있는 공백을 없앤 결과를 반환한다.
+* 이 때 문자열 중간에 있는 공백은 제거되지 않는다.
+
+```java
+public String trim() {
+    int len = value.length;
+    int st = 0;
+    char[] val = value;    /* avoid getfield opcode */
+
+    while ((st < len) && (val[st] <= ' ')) {
+        st++;
+    }
+    while ((st < len) && (val[len - 1] <= ' ')) {
+        len--;
+    }
+    return ((st > 0) || (len < value.length)) ? substring(st, len) : this;
+}
+```
+
+* 공백 ' ' 뿐만 아니라 아스키코드 ' ' 이하의 모든 공백이 제거된다.
+
+#### boolean startsWith(String prefix)
+
+* 주어진 문자열(prefix)로 시작하는지 검사한다.
+
+```java
+public boolean startsWith(String prefix) {
+    return startsWith(prefix, 0);
+}
+```
+
+```java
+public boolean startsWith(String prefix, int toffset) {
+    char ta[] = value;
+    int to = toffset;
+    char pa[] = prefix.value;
+    int po = 0;
+    int pc = prefix.value.length;
+    // Note: toffset might be near -1>>>1.
+    if ((toffset < 0) || (toffset > value.length - pc)) {
+        return false;
+    }
+    while (--pc >= 0) {
+        if (ta[to++] != pa[po++]) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+#### boolean endsWith(String suffix)
+
+* 주어진 문자열(suffix)로 끝나는지 검사한다.
+
+```java
+public boolean endsWith(String suffix) {
+    return startsWith(suffix, value.length - suffix.value.length);
+}
+```
 
 ## join()과 StringJoiner
 
