@@ -429,8 +429,84 @@ public String substring(int beginIndex, int endIndex) {
 
 ## String.format()
 
+* format()은 형식화된 문자열을 만들어내는 간단한 방법이다.
+
+```java
+public static String format(String format, Object... args) {
+    return new Formatter().format(format, args).toString();
+}
+```
+
+```java
+String str = String.format("%d 더하기 %d는 %d 입니다.", 3, 5, 3 + 5);
+System.out.println(str);
+```
+
+```
+3 더하기 5는 8 입니다.
+```
+
 ## 기본형 값을 String으로 변환
 
+* 숫자로 이루어진 문자열을 숫자로, 또는 그 반대로 변환하는 경우가 자주 있다.
+
+```java
+int i = 100;
+
+String str1 = i + "";
+String str2 = String.valueOf(i);
+```
+
+* 성능은 valueOf()가 더 좋지만, 빈 문자열을 더하는 방법이 간단하기 때문에 성능 향상이 필요한 경우에만 valueOf()를 쓰자.  
+  `String str1 = i + "";` 코드는 실제로 다음과 같이 컴파일 된다.
+
+```
+i + "";
+String.valueOf(i) + "";
+(new StringBuilder(String.valueOf(i)).append("")).toString();
+```
+
 ## String을 기본형 값으로 변환
+
+* 반대로 String을 기본형으로 변환하는 방법도 간단하다.  
+  valueOf()를 쓰거나 parseInt()를 사용하면 된다.
+  
+```java
+int i1 = Integer.parseInt("100");
+int i2 = Integer.valueOf("100");
+```
+
+* valueOf()의 반환 타입은 int가 아니라 Integer인데, 오토박싱(auto-boxing)에 의해 int로 자동 변환된다.
+
+```java
+Integer i = Integer.valueOf("100"); // 원래는 반환 타입이 Integer
+```
+
+* 예전에는 parseInt()와 같은 메소드를 많이 사용했는데, 메소드의 이름을 통일하기 위해 valueOf()가 나중에 추가되었다.
+* valueOf(String s)는 메소드 내부에서 그저 parseInt(String s)를 호출할 뿐이므로, 두 메소드는 반환 타입만 다르지 같은 메소드다.
+
+```java:Integer.java
+public static Integer valueOf(String s) throws NumberFormatException {
+    return Integer.valueOf(parseInt(s, 10));  // 10은 10진수를 의미
+}
+```
+
+* 기본형 -> 문자열
+  * String String.valueOf(boolean b)
+  * String String.valueOf(char c)
+  * String String.valueOf(int i)
+  * String String.valueOf(long l)
+  * String String.valueOf(float f)
+  * String String.valueOf(double d)
+
+* 문자열 -> 기본형
+  * boolean Boolean.parseBoolean(String s)
+  * byte Byte.parseByte(String s)
+  * short Short.parseShort(String s)
+  * int Integer.parseInt(String s)
+  * long Long.parseLong(String s)
+  * float Float.parseFloat(String s)
+  * double Double.parseDouble(String s)
+  * 문자열 "A"를 문자 'A'로 변환하려면 `char ch = "A".charAt(0);`과 같이 하면 된다.
 
 # 참고
