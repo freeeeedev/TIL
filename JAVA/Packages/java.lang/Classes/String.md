@@ -284,3 +284,131 @@ public String trim() {
     return ((st > 0) || (len < value.length)) ? substring(st, len) : this;
 }
 ```
+
+### boolean startsWith(String prefix)
+
+* 주어진 문자열(prefix)로 시작하는지 검사한다.
+
+```java
+public boolean startsWith(String prefix) {
+    return startsWith(prefix, 0);
+}
+```
+
+### boolean startsWith(String prefix, int toffset)
+
+* 주어진 위치(toffset)부터 주어진 문자열(prefix)로 시작하는지 검사한다.
+
+```java
+public boolean startsWith(String prefix, int toffset) {
+    char ta[] = value;
+    int to = toffset;
+    char pa[] = prefix.value;
+    int po = 0;
+    int pc = prefix.value.length;
+    // Note: toffset might be near -1>>>1.
+    if ((toffset < 0) || (toffset > value.length - pc)) {
+        return false;
+    }
+    while (--pc >= 0) {
+        if (ta[to++] != pa[po++]) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+### boolean endsWith(String suffix)
+
+* 주어진 문자열(suffix)로 끝나는지 검사한다.
+
+```java
+public boolean endsWith(String suffix) {
+    return startsWith(suffix, value.length - suffix.value.length);
+}
+```
+
+### int hashCode()
+
+* String 인스턴스에 저장되어있는 문자열의 해시코드를 반환한다.
+* 해시코드를 한 번 구한 이후에는(hash != 0) hash값을 그대로 반환한다.
+
+```java
+public int hashCode() {
+    int h = hash;
+    if (h == 0 && value.length > 0) {
+        char val[] = value;
+
+        for (int i = 0; i < value.length; i++) {
+            h = 31 * h + val[i];
+        }
+        hash = h;
+    }
+    return h;
+}
+```
+
+### String[] split(String regex)
+
+* 문자열을 지정된 분리자(regex)로 나누어 문자열 배열에 담아 반환한다.
+
+```java
+public String[] split(String regex) {
+    return split(regex, 0);
+}
+```
+
+### String[] split(String regex, int limit)
+
+* 문자열을 지정된 분리자(regex)로 나누어 문자열 배열에 담아 반환한다.
+* 단, 문자열 전체를 지정된 수(limit)로 자른다.
+
+### static String join(CharSequence delimiter, CharSequence... elements)
+
+* 주어진 문자열들(elements) 사이에 구분자(delimiter)를 넣어서 결합한다.
+
+```java
+public static String join(CharSequence delimiter, CharSequence... elements) {
+    Objects.requireNonNull(delimiter);
+    Objects.requireNonNull(elements);
+    // Number of elements not likely worth Arrays.stream overhead.
+    StringJoiner joiner = new StringJoiner(delimiter);
+    for (CharSequence cs: elements) {
+        joiner.add(cs);
+    }
+    return joiner.toString();
+}
+```
+
+```java
+class Example {
+    public static void main(String[] args) {
+        String animals = "dog,cat,bear";
+        String[] arr = animals.split(",");
+
+        String str = String.join("-", arr);
+        System.out.println(str);
+    }
+}
+```
+
+```
+dog-cat-bear
+```
+
+### static String join(CharSequence delimiter, Iterable\<? extends CharSequence\> elements)
+
+* Iterable\<? extends CharSequence\> 인터페이스를 구현한 클래스의 인스턴스에 담겨있는 문자열들 사이에 구분자를 넣어서 결합한다.
+
+```java
+public static String join(CharSequence delimiter, Iterable<? extends CharSequence> elements) {
+    Objects.requireNonNull(delimiter);
+    Objects.requireNonNull(elements);
+    StringJoiner joiner = new StringJoiner(delimiter);
+    for (CharSequence cs: elements) {
+        joiner.add(cs);
+    }
+    return joiner.toString();
+}
+```
