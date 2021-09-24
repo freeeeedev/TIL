@@ -285,6 +285,34 @@ public String trim() {
 }
 ```
 
+### String toLowerCase()
+
+* default locale 규칙을 사용하여 String 인스턴스에 저장되어 있는 모든 문자를 소문자로 변환하여 반환한다.
+
+```java
+public String toLowerCase() {
+    return toLowerCase(Locale.getDefault());
+}
+```
+
+### String toLowerCase(Locale locale)
+
+* 주어진 locale 규칙을 사용하여 String 인스턴스에 저장되어 있는 모든 문자를 소문자로 변환하여 반환한다.
+
+### String toUpperCase()
+
+* default locale 규칙을 사용하여 String 인스턴스에 저장되어 있는 모든 문자를 대문자로 변환하여 반환한다.
+
+```java
+public String toUpperCase() {
+    return toUpperCase(Locale.getDefault());
+}
+```
+
+### String toUpperCase(Locale locale)
+
+* 주어진 locale 규칙을 사용하여 String 인스턴스에 저장되어 있는 모든 문자를 대문자로 변환하여 반환한다.
+
 ### boolean startsWith(String prefix)
 
 * 주어진 문자열(prefix)로 시작하는지 검사한다.
@@ -410,5 +438,18 @@ public static String join(CharSequence delimiter, Iterable<? extends CharSequenc
         joiner.add(cs);
     }
     return joiner.toString();
+}
+```
+
+### char[] toCharArray()
+
+* String 인스턴스의 문자열을 char 배열로 변환하여 반환한다.
+
+```java
+public char[] toCharArray() {
+    // Cannot use Arrays.copyOf because of class initialization order issues
+    char result[] = new char[value.length];
+    System.arraycopy(value, 0, result, 0, value.length);
+    return result;
 }
 ```
