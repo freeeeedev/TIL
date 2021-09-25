@@ -13,6 +13,46 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 
 ## Fields
 
+### static final Comparator\<String\> CASE_INSENSITIVE_ORDER
+
+* compareToIgnoreCase 메소드에 의해 String 객체를 정렬하는 Comparator
+
+```java
+public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
+
+private static class CaseInsensitiveComparator
+        implements Comparator<String>, java.io.Serializable {
+    // use serialVersionUID from JDK 1.2.2 for interoperability
+    private static final long serialVersionUID = 8575799808933029326L;
+
+    public int compare(String s1, String s2) {
+        int n1 = s1.length();
+        int n2 = s2.length();
+        int min = Math.min(n1, n2);
+        for (int i = 0; i < min; i++) {
+            char c1 = s1.charAt(i);
+            char c2 = s2.charAt(i);
+            if (c1 != c2) {
+                c1 = Character.toUpperCase(c1);
+                c2 = Character.toUpperCase(c2);
+                if (c1 != c2) {
+                    c1 = Character.toLowerCase(c1);
+                    c2 = Character.toLowerCase(c2);
+                    if (c1 != c2) {
+                        // No overflow because of numeric promotion
+                        return c1 - c2;
+                    }
+                }
+            }
+        }
+        return n1 - n2;
+    }
+
+    /** Replaces the de-serialized object. */
+    private Object readResolve() { return CASE_INSENSITIVE_ORDER; }
+}
+```
+
 ## Constructors
 
 ### String()
@@ -224,6 +264,17 @@ public int compareTo(String anotherString) {
 }
 ```
 
+### int compareToIgnoreCase(String str)
+
+* 문자열(str)과 대소문자 구분 없이 사전 순서로 비교한다.
+* 사전 순으로 같으면 0, 이전이면 음수, 이후면 양수를 반환한다.
+
+```java
+public int compareToIgnoreCase(String str) {
+    return CASE_INSENSITIVE_ORDER.compare(this, str);
+}
+```
+
 ### String substring(int beginIndex)
 
 * 주어진 위치(beginIndex)부터 시작하는 문자열을 얻는다.
@@ -260,6 +311,17 @@ public String substring(int beginIndex, int endIndex) {
     }
     return ((beginIndex == 0) && (endIndex == value.length)) ? this
             : new String(value, beginIndex, subLen);
+}
+```
+
+### CharSequence subSequence(int beginIndex, int endIndex)
+
+* 주어진 시작 위치(beginIndex)부터 끝 위치(endIndex) 범위에 포함된 문자열을 얻는다.
+* 이 때, 시작 위치의 문자는 범위에 포함되지만, 끝 위치의 문자는 범위에 포함되지 않는다. (beginIndex <= x < endIndex)
+
+```java
+public CharSequence subSequence(int beginIndex, int endIndex) {
+    return this.substring(beginIndex, endIndex);
 }
 ```
 
@@ -714,4 +776,23 @@ public static String valueOf(char data[]) {
 public static String valueOf(char data[], int offset, int count) {
     return new String(data, offset, count);
 }
+```
+
+### static String format(String format, Object... args)
+
+* 형식화된 문자열을 반환한다.
+
+```java
+public static String format(String format, Object... args) {
+    return new Formatter().format(format, args).toString();
+}
+```
+
+```java
+String str = String.format("%d 더하기 %d는 %d 입니다.", 3, 5, 3 + 5);
+System.out.println(str);
+```
+
+```
+3 더하기 5는 8 입니다.
 ```
