@@ -453,3 +453,265 @@ public char[] toCharArray() {
     return result;
 }
 ```
+
+### String replace(char oldChar, char newChar)
+
+* 문자열 중의 문자(oldChar)를 새로운 문자(newChar)로 모두 바꾼 문자열을 반환한다.
+
+```java
+public String replace(char oldChar, char newChar) {
+    if (oldChar != newChar) {
+        int len = value.length;
+        int i = -1;
+        char[] val = value; /* avoid getfield opcode */
+
+        while (++i < len) {
+            if (val[i] == oldChar) {
+                break;
+            }
+        }
+        if (i < len) {
+            char buf[] = new char[len];
+            for (int j = 0; j < i; j++) {
+                buf[j] = val[j];
+            }
+            while (i < len) {
+                char c = val[i];
+                buf[i] = (c == oldChar) ? newChar : c;
+                i++;
+            }
+            return new String(buf, true);
+        }
+    }
+    return this;
+}
+```
+
+### String replace(CharSequence target, CharSequence replacement)
+
+* 문자열 중에서 문자열(target)을 새로운 문자열(replacement)로 모두 바꾼 문자열을 반환한다
+
+### String replaceFirst(String regex, String replacement)
+
+* 문자열 중에서 문자열(regex)과 일치하는 것 중, 첫 번째 것만 새로운 문자열(replacement)로 바꾼 문자열을 반환한다.
+
+### String replaceAll(String regex, String replacement)
+
+* 문자열 중에서 문자열(regex)과 일치하는 것을 새로운 문자열(replacement)로 모두 바꾼 문자열을 반환한다.
+
+### boolean contains(CharSequence s)
+
+* 문자열에 지정된 문자열(s)이 포함되었는지 검사한다.
+
+```java
+public boolean contains(CharSequence s) {
+    return indexOf(s.toString()) > -1;
+}
+```
+
+### int indexOf(int ch)
+
+* 주어진 문자(ch)가 문자열에 존재하는지 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int indexOf(int ch) {
+    return indexOf(ch, 0);
+}
+```
+
+### int indexOf(int ch, int fromIndex)
+
+* 주어진 문자(ch)가 문자열에 존재하는지 지정된 위치(fromIndex)부터 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int indexOf(int ch, int fromIndex) {
+    final int max = value.length;
+    if (fromIndex < 0) {
+        fromIndex = 0;
+    } else if (fromIndex >= max) {
+        // Note: fromIndex might be near -1>>>1.
+        return -1;
+    }
+
+    if (ch < Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+        // handle most cases here (ch is a BMP code point or a
+        // negative value (invalid code point))
+        final char[] value = this.value;
+        for (int i = fromIndex; i < max; i++) {
+            if (value[i] == ch) {
+                return i;
+            }
+        }
+        return -1;
+    } else {
+        return indexOfSupplementary(ch, fromIndex);
+    }
+}
+```
+
+### int indexOf(String str)
+
+* 주어진 문자열(str)이 문자열에 존재하는지 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int indexOf(String str) {
+    return indexOf(str, 0);
+}
+```
+
+### int indexOf(String str, int fromIndex)
+
+* 주어진 문자열(str)이 문자열에 존재하는지 지정된 위치(fromIndex)부터 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int indexOf(String str, int fromIndex) {
+    return indexOf(value, 0, value.length, str.value, 0, str.value.length, fromIndex);
+}
+```
+
+### static int indexOf(char[] source, int sourceOffset, int sourceCount,
+###                   char[] target, int targetOffset, int targetCount,
+###                     int fromIndex)
+
+```java
+static int indexOf(char[] source, int sourceOffset, int sourceCount,
+                   char[] target, int targetOffset, int targetCount,
+                   int fromIndex) {
+    if (fromIndex >= sourceCount) {
+        return (targetCount == 0 ? sourceCount : -1);
+    }
+    if (fromIndex < 0) {
+        fromIndex = 0;
+    }
+    if (targetCount == 0) {
+        return fromIndex;
+    }
+
+    char first = target[targetOffset];
+    int max = sourceOffset + (sourceCount - targetCount);
+
+    for (int i = sourceOffset + fromIndex; i <= max; i++) {
+        /* Look for first character. */
+        if (source[i] != first) {
+            while (++i <= max && source[i] != first);
+        }
+
+        /* Found first character, now look at the rest of v2 */
+        if (i <= max) {
+            int j = i + 1;
+            int end = j + targetCount - 1;
+            for (int k = targetOffset + 1; j < end && source[j] == target[k]; j++, k++);
+
+            if (j == end) {
+                /* Found whole string. */
+                return i - sourceOffset;
+            }
+        }
+    }
+    return -1;
+}
+```
+
+### int lastIndexOf(int ch)
+
+* 주어진 문자(ch)를 문자열의 오른쪽 끝에서부터 왼쪽으로 존재하는지 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int lastIndexOf(int ch) {
+    return lastIndexOf(ch, value.length - 1);
+}
+```
+
+### int lastIndexOf(int ch, int fromIndex)
+
+* 주어진 문자(ch)를 문자열의 지정된 위치(fromIndex)부터 왼쪽으로 존재하는지 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int lastIndexOf(int ch, int fromIndex) {
+    if (ch < Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+        // handle most cases here (ch is a BMP code point or a
+        // negative value (invalid code point))
+        final char[] value = this.value;
+        int i = Math.min(fromIndex, value.length - 1);
+        for (; i >= 0; i--) {
+            if (value[i] == ch) {
+                return i;
+            }
+        }
+        return -1;
+    } else {
+        return lastIndexOfSupplementary(ch, fromIndex);
+    }
+}
+```
+
+### int lastIndexOf(String str)
+
+* 주어진 문자열(str)를 문자열의 오른쪽 끝에서부터 왼쪽으로 존재하는지 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int lastIndexOf(String str) {
+    return lastIndexOf(str, value.length);
+}
+```
+
+### int lastIndexOf(String str, int fromIndex)
+
+* 주어진 문자열(str)를 문자열의 지정된 위치(fromIndex)부터 왼쪽으로 존재하는지 확인하여 위치(index)를 반환한다.
+* 못 찾으면 -1을 반환한다.
+
+```java
+public int lastIndexOf(String str, int fromIndex) {
+    return lastIndexOf(value, 0, value.length, str.value, 0, str.value.length, fromIndex);
+}
+```
+
+### static String valueOf()
+
+* 주어진 값을 문자열로 변환하여 반환한다.
+
+```java
+public static String valueOf(boolean b) {
+    return b ? "true" : "false";
+}
+
+public static String valueOf(char c) {
+    char data[] = {c};
+    return new String(data, true);
+}    
+
+public static String valueOf(int i) {
+    return Integer.toString(i);
+}
+
+public static String valueOf(long l) {
+    return Long.toString(l);
+}
+
+public static String valueOf(float f) {
+    return Float.toString(f);
+}
+
+public static String valueOf(double d) {
+    return Double.toString(d);
+}
+
+public static String valueOf(Object obj) {
+    return (obj == null) ? "null" : obj.toString();
+}
+
+public static String valueOf(char data[]) {
+    return new String(data);
+}
+
+public static String valueOf(char data[], int offset, int count) {
+    return new String(data, offset, count);
+}
+```
