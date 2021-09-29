@@ -80,4 +80,5 @@ public interface List<E> extends Collection<E> {
     default Spliterator<E> spliterator() {
         return Spliterators.spliterator(this, Spliterator.ORDERED);
     }
+}
 ```
