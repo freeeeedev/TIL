@@ -15,8 +15,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         return indexOf(o) >= 0;
     }
     
-    // (I)List : int indexOf(Object o);
-    // (I)List -> (C)AbstractList : public int indexOf(Object o) { ... }
+    // (I)List<E> : int indexOf(Object o);
+    // (I)List<E> -> (C)AbstractList : public int indexOf(Object o) { ... }
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
@@ -30,8 +30,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         return -1;
     }
     
-    // (I)List : int lastIndexOf(Object o);
-    // (I)List -> (C)AbstractList : public int lastIndexOf(Object o) { ... }
+    // (I)List<E> : int lastIndexOf(Object o);
+    // (I)List<E> -> (C)AbstractList<E> : public int lastIndexOf(Object o) { ... }
     public int lastIndexOf(Object o) {
         if (o == null) {
             for (int i = size-1; i >= 0; i--)
@@ -159,4 +159,37 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
 
         size = 0;
     }
+    
+    // (I)Collection<E> : boolean addAll(Collection<? extends E> c);
+    // (I)Collection<E> -> (C)AbstractCollection<E> : public boolean addAll(Collection<? extends E> c) { ... }
+    public boolean addAll(Collection<? extends E> c) {
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        ensureCapacityInternal(size + numNew);  // Increments modCount
+        System.arraycopy(a, 0, elementData, size, numNew);
+        size += numNew;
+        return numNew != 0;
+    }
+    
+    // (I)List<E> : boolean addAll(int index Collection<? extends E> c);
+    // (I)List<E> -> (C)AbstractList<E> : public boolean addAll(int index Collection<? extends E> c) { ... }
+    public boolean addAll(int index, Collection<? extends E> c) {
+        rangeCheckForAdd(index);
+
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        ensureCapacityInternal(size + numNew);  // Increments modCount
+
+        int numMoved = size - index;
+        if (numMoved > 0)
+            System.arraycopy(elementData, index, elementData, index + numNew,
+                             numMoved);
+
+        System.arraycopy(a, 0, elementData, index, numNew);
+        size += numNew;
+        return numNew != 0;
+    }
+    
+    ...
+}
 ```
