@@ -15,4 +15,5 @@ public interface Iterator<E> {
         while (hasNext())
             action.accept(next());
     }
+}
 ```
