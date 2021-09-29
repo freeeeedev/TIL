@@ -1,0 +1,1 @@
+# Interface Collection\<E\>
