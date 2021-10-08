@@ -5,6 +5,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
     private static final int DEFAULT_CAPACITY = 10;
     private static final Object[] EMPTY_ELEMENTDATA = {};
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     
     transient Object[] elementData; // non-private to simplify nested class access
     
@@ -35,6 +36,15 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         } else {
             // replace with empty array.
             elementData = EMPTY_ELEMENTDATA;
+        }
+    }
+    
+    public void trimToSize() {
+        modCount++;
+        if (size < elementData.length) {
+            elementData = (size == 0)
+              ? EMPTY_ELEMENTDATA
+              : Arrays.copyOf(elementData, size);
         }
     }
     
