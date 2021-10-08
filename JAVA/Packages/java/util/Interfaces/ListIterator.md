@@ -2,10 +2,8 @@
 
 ```java
 public interface ListIterator<E> extends Iterator<E> {
-    // Iterator
     boolean hasNext();
     
-    // Iterator
     E next();
     
     boolean hasPrevious();
@@ -16,7 +14,6 @@ public interface ListIterator<E> extends Iterator<E> {
     
     int previousIndex();
     
-    // Iterator
     void remove();
     
     void set(E e);
