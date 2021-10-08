@@ -10,6 +10,34 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
     
     private int size;
     
+    public ArrayList(int initialCapacity) {
+        if (initialCapacity > 0) {
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENTDATA;
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+        }
+    }
+    
+    public ArrayList() {
+        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+    }
+    
+    public ArrayList(Collection<? extends E> c) {
+        Object[] a = c.toArray();
+        if ((size = a.length) != 0) {
+            if (c.getClass() == ArrayList.class) {
+                elementData = a;
+            } else {
+                elementData = Arrays.copyOf(a, size, Object[].class);
+            }
+        } else {
+            // replace with empty array.
+            elementData = EMPTY_ELEMENTDATA;
+        }
+    }
+    
     public int size() {
         return size;
     }
