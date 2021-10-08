@@ -2,7 +2,14 @@
 
 ```java
 public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
-
+    private static final int DEFAULT_CAPACITY = 10;
+    private static final Object[] EMPTY_ELEMENTDATA = {};
+    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
+    
+    transient Object[] elementData; // non-private to simplify nested class access
+    
+    private int size;
+    
     public int size() {
         return size;
     }
