@@ -155,8 +155,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         rangeCheckForAdd(index);
 
         ensureCapacityInternal(size + 1);  // Increments modCount!!
-        System.arraycopy(elementData, index, elementData, index + 1,
-                         size - index);
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
         elementData[index] = element;
         size++;
     }
@@ -169,8 +168,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
 
         int numMoved = size - index - 1;
         if (numMoved > 0)
-            System.arraycopy(elementData, index+1, elementData, index,
-                             numMoved);
+            System.arraycopy(elementData, index+1, elementData, index, numMoved);
         elementData[--size] = null; // clear to let GC do its work
 
         return oldValue;
@@ -203,8 +201,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         modCount++;
         int numMoved = size - index - 1;
         if (numMoved > 0)
-            System.arraycopy(elementData, index+1, elementData, index,
-                             numMoved);
+            System.arraycopy(elementData, index+1, elementData, index, numMoved);
         elementData[--size] = null; // clear to let GC do its work
     }
     
@@ -240,8 +237,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
 
         int numMoved = size - index;
         if (numMoved > 0)
-            System.arraycopy(elementData, index, elementData, index + numNew,
-                             numMoved);
+            System.arraycopy(elementData, index, elementData, index + numNew, numMoved);
 
         System.arraycopy(a, 0, elementData, index, numNew);
         size += numNew;
