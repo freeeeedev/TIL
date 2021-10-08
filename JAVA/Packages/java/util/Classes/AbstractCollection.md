@@ -2,7 +2,8 @@
 
 ```java
 public abstract class AbstractCollection<E> implements Collection<E> {
-
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+    
     protected AbstractCollection() {}
     
     public abstract Iterator<E> iterator();
