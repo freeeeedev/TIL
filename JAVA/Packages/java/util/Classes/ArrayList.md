@@ -195,6 +195,19 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         return false;
     }
     
+    /*
+     * Private remove method that skips bounds checking and does not
+     * return the value removed.
+     */
+    private void fastRemove(int index) {
+        modCount++;
+        int numMoved = size - index - 1;
+        if (numMoved > 0)
+            System.arraycopy(elementData, index+1, elementData, index,
+                             numMoved);
+        elementData[--size] = null; // clear to let GC do its work
+    }
+    
     public void clear() {
         modCount++;
 
@@ -235,6 +248,49 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, RandomAcce
         return numNew != 0;
     }
     
+    public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        return batchRemove(c, false);
+    }
+    
+    public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        return batchRemove(c, true);
+    }
+    
+    public ListIterator<E> listIterator(int index) {
+        if (index < 0 || index > size)
+            throw new IndexOutOfBoundsException("Index: "+index);
+        return new ListItr(index);
+    }
+    
+    public ListIterator<E> listIterator() {
+        return new ListItr(0);
+    }
+    
+    public Iterator<E> iterator() {
+        return new Itr();
+    }
+    
+    public List<E> subList(int fromIndex, int toIndex) {
+        subListRangeCheck(fromIndex, toIndex, size);
+        return new SubList(this, 0, fromIndex, toIndex);
+    }
+    
+    @Override
+    public void forEach(Consumer<? super E> action) {
+        Objects.requireNonNull(action);
+        final int expectedModCount = modCount;
+        @SuppressWarnings("unchecked")
+        final E[] elementData = (E[]) this.elementData;
+        final int size = this.size;
+        for (int i=0; modCount == expectedModCount && i < size; i++) {
+            action.accept(elementData[i]);
+        }
+        if (modCount != expectedModCount) {
+            throw new ConcurrentModificationException();
+        }
+    }
     ...
 }
 ```
