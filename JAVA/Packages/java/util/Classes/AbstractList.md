@@ -2,12 +2,8 @@
 
 ```java
 public abstract class AbstractList<E> extends AbstractCollection<E> implements List<E> {
-
     protected AbstractList() {}
     
-    // (I)Collection<E> : boolean add(E e);
-    // (I)Collection<E> -> (C)AbstractCollection<E> : boolean add(E e) { throw new UnsupportedOperationException(); }
-    // (I)Collection<E> -> (I)List<E> : boolean add(E e);
     public boolean add(E e) {
         add(size(), e);
         return true;
@@ -55,13 +51,10 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
         return -1;
     }
     
-    // (I)Collection<E> -> (C)AbstarctCollection<E> : public void clear() { ... }
-    // (I)Collection<E> -> (I)List<E> : void clear();
     public void clear() {
         removeRange(0, size());
     }
     
-    // List<E>
     public boolean addAll(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
         boolean modified = false;
@@ -72,17 +65,14 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
         return modified;
     }
     
-    // Iterable<T> : Iterator<T> iterator();
     public Iterator<E> iterator() {
         return new Itr();
     }
     
-    // List<E>
     public ListIterator<E> listIterator() {
         return listIterator(0);
     }
     
-    // List<E>
     public ListIterator<E> listIterator(final int index) {
         rangeCheckForAdd(index);
 
