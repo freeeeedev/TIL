@@ -1,4 +1,4 @@
-# Comparator\<T\>
+# Interface Comparator\<T\>
 
 ```java
 @FunctionalInterface
