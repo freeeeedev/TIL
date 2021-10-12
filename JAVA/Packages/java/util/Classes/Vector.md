@@ -9,8 +9,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
     public Vector(int initialCapacity, int capacityIncrement) {
         super();
         if (initialCapacity < 0)
-            throw new IllegalArgumentException("Illegal Capacity: "+
-                                               initialCapacity);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         this.elementData = new Object[initialCapacity];
         this.capacityIncrement = capacityIncrement;
     }
@@ -149,8 +148,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
     
     public synchronized void setElementAt(E obj, int index) {
         if (index >= elementCount) {
-            throw new ArrayIndexOutOfBoundsException(index + " >= " +
-                                                     elementCount);
+            throw new ArrayIndexOutOfBoundsException(index + " >= " + elementCount);
         }
         elementData[index] = obj;
     }
@@ -158,8 +156,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
     public synchronized void removeElementAt(int index) {
         modCount++;
         if (index >= elementCount) {
-            throw new ArrayIndexOutOfBoundsException(index + " >= " +
-                                                     elementCount);
+            throw new ArrayIndexOutOfBoundsException(index + " >= " + elementCount);
         }
         else if (index < 0) {
             throw new ArrayIndexOutOfBoundsException(index);
@@ -175,8 +172,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
     public synchronized void insertElementAt(E obj, int index) {
         modCount++;
         if (index > elementCount) {
-            throw new ArrayIndexOutOfBoundsException(index
-                                                     + " > " + elementCount);
+            throw new ArrayIndexOutOfBoundsException(index + " > " + elementCount);
         }
         ensureCapacityHelper(elementCount + 1);
         System.arraycopy(elementData, index, elementData, index + 1, elementCount - index);
@@ -307,6 +303,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
     public synchronized Iterator<E> iterator() {
         return new Itr();
     }
+    
     ...
 }
 ```
