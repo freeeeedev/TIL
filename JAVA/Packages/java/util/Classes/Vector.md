@@ -40,6 +40,13 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
         }
     }
     
+    public synchronized void ensureCapacity(int minCapacity) {
+        if (minCapacity > 0) {
+            modCount++;
+            ensureCapacityHelper(minCapacity);
+        }
+    }
+    
     public synchronized void setSize(int newSize) {
         modCount++;
         if (newSize > elementCount) {
@@ -288,6 +295,63 @@ public class Vector<E> extends AbstractList<E> implements List<E>, RandomAccess,
     
     public void clear() {
         removeAllElements();
+    }
+    
+    public synchronized boolean containsAll(Collection<?> c) {
+        return super.containsAll(c);
+    }
+    
+    public synchronized boolean addAll(Collection<? extends E> c) {
+        modCount++;
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        ensureCapacityHelper(elementCount + numNew);
+        System.arraycopy(a, 0, elementData, elementCount, numNew);
+        elementCount += numNew;
+        return numNew != 0;
+    }
+    
+    public synchronized boolean removeAll(Collection<?> c) {
+        return super.removeAll(c);
+    }
+    
+    public synchronized boolean retainAll(Collection<?> c) {
+        return super.retainAll(c);
+    }
+    
+    public synchronized boolean addAll(int index, Collection<? extends E> c) {
+        modCount++;
+        if (index < 0 || index > elementCount)
+            throw new ArrayIndexOutOfBoundsException(index);
+
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        ensureCapacityHelper(elementCount + numNew);
+
+        int numMoved = elementCount - index;
+        if (numMoved > 0)
+            System.arraycopy(elementData, index, elementData, index + numNew,
+                             numMoved);
+
+        System.arraycopy(a, 0, elementData, index, numNew);
+        elementCount += numNew;
+        return numNew != 0;
+    }
+    
+    public synchronized boolean equals(Object o) {
+        return super.equals(o);
+    }
+    
+    public synchronized int hashCode() {
+        return super.hashCode();
+    }
+    
+    public synchronized String toString() {
+        return super.toString();
+    }
+    
+    public synchronized List<E> subList(int fromIndex, int toIndex) {
+        return Collections.synchronizedList(super.subList(fromIndex, toIndex), this);
     }
     
     public synchronized ListIterator<E> listIterator(int index) {
