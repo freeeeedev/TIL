@@ -22,14 +22,12 @@ public interface List<E> extends Collection<E> {
     
     boolean addAll(Collection<? extends E> c);
     
-    // List
     boolean addAll(int index, Collection<? extends E> c);
     
     boolean removeAll(Collection<?> c);
     
     boolean retainAll(Collection<?> c);
     
-    // List
     default void replaceAll(UnaryOperator<E> operator) {
         Objects.requireNonNull(operator);
         final ListIterator<E> li = this.listIterator();
@@ -38,7 +36,6 @@ public interface List<E> extends Collection<E> {
         }
     }
     
-    // List
     @SuppressWarnings({"unchecked", "rawtypes"})
     default void sort(Comparator<? super E> c) {
         Object[] a = this.toArray();
@@ -55,8 +52,6 @@ public interface List<E> extends Collection<E> {
     boolean equals(Object o);
     
     int hashCode();
-    
-    // ------------------------- List -------------------------
     
     E get(int index);
     
