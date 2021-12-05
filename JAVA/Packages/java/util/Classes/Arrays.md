@@ -315,6 +315,12 @@ private static <T> int binarySearch0(T[] a, int fromIndex, int toIndex, T key, C
 ```java
 public class Arrays {
     ...
+    @SafeVarargs
+    @SuppressWarnings("varargs")
+    public static <T> List<T> asList(T... a) {
+        return new ArrayList<>(a);
+    }
+    
     private static class ArrayList<E> extends AbstractList<E> implements RandomAccess, java.io.Serializable {
         private static final long serialVersionUID = -2764017481108945198L;
         private final E[] a;
@@ -405,17 +411,6 @@ public class Arrays {
             Arrays.sort(a, c);
         }
     }
-    
-    @SafeVarargs
-    @SuppressWarnings("varargs")
-    public static <T> List<T> asList(T... a) {
-        return new ArrayList<>(a);
-    }
-    
     ...
 }
-```
-
-```java
-
 ```
